@@ -81,8 +81,18 @@
       <div class="w-full md:w-1/2 px-3">
         <div class="bg-white p-6 rounded-lg shadow-lg">
           <h2 class="text-xl font-bold mb-4">Results</h2>
-          <div v-if="results">
-            <p>{{ results }}</p>
+          <div v-if="submitted">
+
+            <p class="bg-green-500 text-white p-2 text-xs text-center w-[20%] capitalize font-semibold rounded-full">{{ dummyResponse.evaluation }}</p>
+            <ol class="mt-5">
+              <li v-for="(item, index) in dummyResponse.reasons" :key="index" class="rounded-md shadow-md p-5">
+                <p><strong>GPT Eval: </strong>{{ item.GPT.evaluation }}</p>
+                <p><strong>GPT Reason: </strong>{{ item.GPT.reason }}</p>
+                <hr class="my-2"/>
+                <p><strong>Claude Eval: </strong>{{ item.claude.evaluation }}</p>
+                <p><strong>Claude Reason: </strong>{{ item.GPT.reason }}</p>
+              </li>
+            </ol>
           </div>
           <div v-else>
             <p class="text-gray-500">No results to display.</p>
@@ -100,7 +110,23 @@ import { ref } from "vue";
 const file = ref(null);
 const description = ref("");
 const results = ref("");
-const isDragActive = ref(false); // To track drag status
+const isDragActive = ref(false); 
+const submitted = ref(false); 
+const dummyResponse = ref({
+  "evaluation": "good candidate",
+  "reasons":[
+    {
+      "GPT": {
+        "evaluation": "good candidate",
+        "reason": "This is a good candidate for this medical trial because it meets the criteria for success.",
+      },
+      "claude": {
+        "evaluation": "good candidate",
+        "reason": "This is a good candidate for this medical trial because it meets the criteria for success."
+      }
+    }
+  ]
+})
 
 // Trigger file select dialog
 const fileInput = ref(null);
@@ -140,12 +166,15 @@ const removeFile = () => {
 
 // Handle form submission
 const submitForm = () => {
+  submitted.value = false;
   if (file.value || description.value) {
     if (file.value) {
       results.value = `File "${file.value.name}" uploaded"`;
+      submitted.value = true
     }
     if (description.value) {
       results.value = `Description: "${description.value}"`;
+      submitted.value = true
     }
     file.value = null;
     description.value = "";
