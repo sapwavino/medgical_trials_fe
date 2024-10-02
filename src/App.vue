@@ -86,11 +86,11 @@
             <p class="bg-green-500 text-white p-1 text-xs text-center w-[20%] capitalize font-semibold rounded-full mt-5" >{{ dummyResponse.evaluation }}</p>
             <ol class="mt-5">
               <li v-for="(item, index) in dummyResponse.reasons" :key="index" class="rounded-md shadow-md p-5">
-                <p><strong>GPT Eval: </strong>{{ item.GPT.evaluation }}</p>
+                <p><strong>GPT Evaluation: </strong>{{ item.GPT.evaluation }}</p>
                 <p><strong>GPT Reason: </strong>{{ item.GPT.reason }}</p>
                 <hr class="my-2"/>
-                <p><strong>Claude Eval: </strong>{{ item.claude.evaluation }}</p>
-                <p><strong>Claude Reason: </strong>{{ item.GPT.reason }}</p>
+                <p><strong>Claude Evaluation: </strong>{{ item.claude.evaluation }}</p>
+                <p><strong>Claude Reason: </strong>{{ item.claude.reason }}</p>
               </li>
             </ol>
           </div>
@@ -117,12 +117,12 @@ const dummyResponse = ref({
   "reasons":[
     {
       "GPT": {
-        "evaluation": "good candidate",
-        "reason": "This is a good candidate for this medical trial because it meets the criteria for success.",
+        "evaluation": "Good candidate",
+        "reason": "João Silva is a good candidate for the medical trials as he has extensive experience in clinical research and a strong adherence to ethical guidelines.",
       },
       "claude": {
-        "evaluation": "good candidate",
-        "reason": "This is a good candidate for this medical trial because it meets the criteria for success."
+        "evaluation": "Good candidate",
+        "reason": "João has extensive education and experience in clinical research and a strong adherence to ethical guidelines."
       }
     }
   ]
