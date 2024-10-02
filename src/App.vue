@@ -1,9 +1,12 @@
 <template>
-  <h2
-    class="bg-[#044477] w-40 p-3 text-3xl text-center text-white rounded-lg my-5 mx-24"
-  >
-  <strong>Med</strong>gical
-  </h2>
+  <div>
+    <h2
+      class="bg-[#044477] w-40 p-3 text-3xl text-center text-white rounded-lg my-5 mx-24 shadow-2xl"
+    >
+      <strong>Med</strong>gical
+    </h2>
+  </div>
+
   <div class="container mx-auto p-6">
     <div class="flex flex-wrap -mx-3">
       <!-- First Section: File Upload Area, Text Input, and Submit Button -->
@@ -66,8 +69,8 @@
           <!-- Submit Button -->
           <button
             @click="submitForm"
-            :disabled="!file"
-            class="mt-4 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-[#044477] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
+            :disabled="!file && !description"
+            class="mt-4 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
             Submit
           </button>
@@ -138,7 +141,14 @@ const removeFile = () => {
 // Handle form submission
 const submitForm = () => {
   if (file.value || description.value) {
-    results.value = `File "${file.value.name}" uploaded with description: "${description.value}"`;
+    if (file.value) {
+      results.value = `File "${file.value.name}" uploaded"`;
+    }
+    if (description.value) {
+      results.value = `Description: "${description.value}"`;
+    }
+    file.value = null;
+    description.value = "";
   } else {
     alert("Please upload a PDF file and provide a description.");
   }
