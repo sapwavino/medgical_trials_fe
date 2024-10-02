@@ -37,7 +37,7 @@
               </button>
             </template>
             <template v-else>
-              <p class="text-gray-500">Clique ou arraste e largue para fazer o upload do PDF</p>
+              <p class="text-gray-500">Click or drag and drop to upload PDF </p>
             </template>
             <input
               ref="fileInput"
