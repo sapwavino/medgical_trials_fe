@@ -33,11 +33,11 @@
                 @click.stop="removeFile"
                 class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none"
               >
-              Cancelar
+                Cancel
               </button>
             </template>
             <template v-else>
-              <p class="text-gray-500">Click or drag and drop to upload PDF </p>
+              <p class="text-gray-500">Click or Drag and Drop to Upload PDF</p>
             </template>
             <input
               ref="fileInput"
@@ -51,14 +51,14 @@
           <!-- Text Input Field -->
           <div class="mt-4">
             <label for="description" class="block text-gray-700 mb-2"
-              >Descrição</label
+              >Description</label
             >
             <textarea
               id="description"
               v-model="description"
               type="text"
               rows="10"
-              placeholder="Introduza ou cole a descrição..."
+              placeholder="Type or paste description..."
               class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#044477]"
             />
           </div>
@@ -69,7 +69,7 @@
             :disabled="!file"
             class="mt-4 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-[#044477] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
-          Enviar
+            Submit
           </button>
         </div>
       </div>
@@ -77,13 +77,12 @@
       <!-- Second Section: Jumbotron for Results -->
       <div class="w-full md:w-1/2 px-3">
         <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h2 class="text-xl font-bold">Resultados</h2>
-          <hr class="mb-5"/>
+          <h2 class="text-xl font-bold mb-4">Results</h2>
           <div v-if="results">
             <p>{{ results }}</p>
           </div>
           <div v-else>
-            <p class="text-gray-500">Sem resultado para exibir.</p>
+            <p class="text-gray-500">No results to display.</p>
           </div>
         </div>
       </div>
@@ -114,7 +113,7 @@ const handleFileDrop = (e) => {
     isDragActive.value = false; // Reset drag active state after drop
     console.log("File uploaded:", file.value);
   } else {
-    alert("Por favor carregue APENAS um ficheiro PDF.");
+    alert("Please upload a PDF file.");
   }
 };
 
@@ -125,7 +124,7 @@ const handleFileSelect = (e) => {
     file.value = selectedFile;
     console.log("File selected:", file.value);
   } else {
-    alert("Selecione um ficheiro PDF.");
+    alert("Please select a PDF file.");
   }
 };
 
