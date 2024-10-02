@@ -19,7 +19,7 @@
             @drop.prevent="handleFileDrop"
             @click="triggerFileSelect"
             :class="[
-              'border-4 border-dashed rounded-lg h-48 flex flex-col justify-center items-center cursor-pointer',
+              'border-[3px] border-dashed rounded-lg h-48 flex flex-col justify-center items-center cursor-pointer',
               isDragActive ? 'border-[#093456]' : 'border-gray-300',
               'hover:bg-gray-50',
             ]"
@@ -80,10 +80,10 @@
       <!-- Second Section: Jumbotron for Results -->
       <div class="w-full md:w-1/2 px-3">
         <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h2 class="text-xl font-bold mb-4">Results</h2>
+          <h2 class="text-2xl font-bold mb-4">Results <span class="ml-5 border border-[#044477] text-[#044477] p-1 rounded-full px-4 hover:text-white hover:bg-[#093456] text-xs cursor-pointer" @click="submitted = false" v-if="submitted">Clear</span></h2>
           <div v-if="submitted">
 
-            <p class="bg-green-500 text-white p-2 text-xs text-center w-[20%] capitalize font-semibold rounded-full">{{ dummyResponse.evaluation }}</p>
+            <p class="bg-green-500 text-white p-1 text-xs text-center w-[20%] capitalize font-semibold rounded-full mt-5" >{{ dummyResponse.evaluation }}</p>
             <ol class="mt-5">
               <li v-for="(item, index) in dummyResponse.reasons" :key="index" class="rounded-md shadow-md p-5">
                 <p><strong>GPT Eval: </strong>{{ item.GPT.evaluation }}</p>
