@@ -14,7 +14,10 @@
   <div class="container mx-auto p-6">
     <div class="flex flex-wrap -mx-3">
       <!-- First Section: Trial File Upload -->
-      <div class="w-full md:w-1/3 mx-auto px-3" v-if="!trialFileUploaded">
+      <div
+        class="w-full md:w-1/3 mx-auto px-3"
+        v-if="!trialFileUploaded && currentScreen === 1"
+      >
         <div class="bg-gray-100 p-6 rounded-lg shadow-lg mb-6">
           <div
             @dragover.prevent="handleDragOver"
@@ -33,7 +36,9 @@
                 alt="PDF Icon"
                 class="h-12 mb-2"
               />
-              <p class="text-gray-500 text-center">{{ trialFile.name }}</p>
+              <p class="text-gray-500 text-center" v-if="trialFile">
+                {{ trialFile.name }}
+              </p>
               <!-- Cancel Button to remove the uploaded file -->
               <button
                 @click.stop="removeTrialFile"
@@ -80,7 +85,7 @@
       <!-- Second Section: Patient File Upload -->
       <div v-else class="px-3 grid grid-cols-2 w-full">
         <p class="text-gray-200 text-center col-span-2 mb-5 text-2xl">
-          <strong>Trial File: </strong>{{ trialFile.name }}
+          <strong v-if="trialFile">Trial File: </strong>{{ trialFile.name }}
         </p>
         <div class="bg-gray-100 p-6 rounded-lg shadow-lg mb-6">
           <div
@@ -100,12 +105,12 @@
                 alt="PDF Icon"
                 class="h-12 mb-2"
               />
-              <p class="text-gray-500 text-center">{{ patientFile.name }}</p>
+              <!-- <p class="text-gray-500 text-center" v-if="patientFile">{{ patientFile.name }}</p> -->
               <button
                 @click.stop="removePatientFile"
-                class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none"
+                class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none text-xs"
               >
-                Remove Patient File
+                ✖︎ Remove Patient File
               </button>
             </template>
             <template v-else>
@@ -156,10 +161,9 @@
 
           <button
             @click="goBack"
-            class="mt-4 ml-2 w-1/3 bg-[#044477
-            ] text-white py-2 rounded-lg hover:bg-gray-600 focus:outline-none"
+            class="mt-4 ml-2 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-gray-600 focus:outline-none"
           >
-            Go Back
+          ← Go Back
           </button>
         </div>
         <div class="px-3">
@@ -173,55 +177,58 @@
                 ><icon>✖︎</icon> Clear</span
               >
             </h2>
-            <div v-if="submitted">
-              <div v-if="results === ''">
+            <div v-if="results === null">
+              <p class="text-gray-500" v-if="results === null && !submitted">
+                No results to display.
+              </p>
+              <section v-else>
                 Loading results...
                 <div class="loader"></div>
-              </div>
-              <section v-else>
-                <ol class="mt-5">
-                  <li
-                    v-for="(result, index) in results"
-                    :key="index"
-                    class="rounded-md shadow-md p-5"
-                  >
-                    <div v-if="index === 'Claude'">
-                      <p>
-                        <strong>Claude Evaluation: </strong
-                        ><span
-                          :class="{
-                            'bg-emerald-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
-                              result.evaluation === 'Good candidate',
-                            'bg-red-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
-                              result.evaluation === 'Bad candidate',
-                          }"
-                          >{{ result.evaluation }}</span
-                        >
-                      </p>
-                      <p><strong>Claude Reason: </strong>{{ result.reason }}</p>
-                    </div>
-                    <div v-else>
-                      <p>
-                        <strong>GPT Evaluation: </strong
-                        ><span
-                          :class="{
-                            'bg-emerald-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
-                              result.evaluation === 'Good candidate',
-                            'bg-red-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
-                              result.evaluation === 'Bad candidate',
-                          }"
-                          >{{ result.evaluation }}</span
-                        >
-                      </p>
-                      <p><strong>GPT Reason: </strong>{{ result.reason }}</p>
-                    </div>
-                  </li>
-                </ol>
               </section>
             </div>
-            <div v-else>
+            <section v-else>
+              <ol class="mt-5">
+                <li
+                  v-for="(result, index) in results"
+                  :key="index"
+                  class="rounded-md shadow-md p-5"
+                >
+                  <div v-if="index === 'Claude'">
+                    <p>
+                      <strong>Claude Evaluation: </strong
+                      ><span
+                        :class="{
+                          'bg-emerald-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Good candidate',
+                          'bg-red-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Bad candidate',
+                        }"
+                        >{{ result.evaluation }}</span
+                      >
+                    </p>
+                    <p><strong>Claude Reason: </strong>{{ result.reason }}</p>
+                  </div>
+                  <div v-else>
+                    <p>
+                      <strong>GPT Evaluation: </strong
+                      ><span
+                        :class="{
+                          'bg-emerald-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Good candidate',
+                          'bg-red-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Bad candidate',
+                        }"
+                        >{{ result.evaluation }}</span
+                      >
+                    </p>
+                    <p><strong>GPT Reason: </strong>{{ result.reason }}</p>
+                  </div>
+                </li>
+              </ol>
+            </section>
+            <!-- <div v-else>
               <p class="text-gray-500">No results to display.</p>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -230,17 +237,31 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const trialFile = ref(null);
 const patientFile = ref(null);
+let currentScreen = ref(1);
 const description = ref("");
 const isDragActive = ref(false);
 const trialFileUploaded = ref(false);
-const loading = ref(false);
+const submitted = ref(false);
+const results = ref(null);
 
 // Trial file logic
 const trialFileInput = ref(null);
+
+// write watcher for trialFile
+// watch(trialFile, () => {
+//   if (trialFile.value) {
+//     trialFileUploaded.value = true;
+//     currentScreen = 2;
+//   } else {
+//     trialFileUploaded.value = false;
+//     currentScreen = 1;
+//   }
+// });
+
 const triggerTrialFileSelect = () => trialFileInput.value.click();
 
 const handleTrialFileSelect = (e) => {
@@ -274,6 +295,10 @@ const goToNextScreen = () => {
 
 const goBack = () => {
   trialFileUploaded.value = false;
+  trialFile.value.value = null;
+  patientFileFileUploaded.value = false;
+  patientFile.value.value = null;
+  currentScreen.value = 1;
 };
 
 // Patient file logic
@@ -306,34 +331,35 @@ const removePatientFile = () => {
 
 // Submit form
 const submitForm = () => {
+  submitted.value = true;
   if (trialFile.value || patientFile.value || description.value) {
     // Handle form submission logic here
     console.log("Trial File:", trialFile.value);
     console.log("Patient File:", patientFile.value);
     console.log("Description:", description.value);
 
-    submitted.value = false;
-    results.value = "";
-    if (file.value || description.value) {
-      const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
-      const formData = new FormData();
-      formData.append("file", trialFile.value.files[0]);
-      formData.append("file", patientFile.value.files[1]);
-      formData.append("text", description.value);
-      fetch(url, {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          results.value = data;
-        });
-      submitted.value = true;
-    }
+    // submitted.value = false;
+    // results.value = "";
+    const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
+    const formData = new FormData();
+    formData.append("trialsPDF", trialFile.value);
+    formData.append("patientPDF", patientFile.value);
+    formData.append("text", description.value);
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        results.value = data;
+        submitted.value = true;
+      });
+    // submitted.value = true;
     // alert("Form submitted successfully.");
-    trialFile.value = null;
-    patientFile.value = null;
-    description.value = "";
+    // trialFile.value = null;
+    // patientFile.value = null;
+    // description.value = "";
   } else {
     alert("Please upload files or fill out the description.");
   }
@@ -348,3 +374,23 @@ const handleDragLeave = () => {
   isDragActive.value = false;
 };
 </script>
+
+<style>
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 60px;
+  aspect-ratio: 4;
+  --_g: no-repeat radial-gradient(circle closest-side,#000 90%,#0000);
+  background: 
+    var(--_g) 0%   50%,
+    var(--_g) 50%  50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 100%;
+  animation: l7 1s infinite linear;
+}
+@keyframes l7 {
+    33%{background-size:calc(100%/3) 0%  ,calc(100%/3) 100%,calc(100%/3) 100%}
+    50%{background-size:calc(100%/3) 100%,calc(100%/3) 0%  ,calc(100%/3) 100%}
+    66%{background-size:calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0%  }
+}
+</style>
