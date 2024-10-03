@@ -114,7 +114,47 @@
                 </p>
               </li>
             </ol> -->
-            <p>Loading results...</p>
+            <div v-if="results === '' ">Loading results...<div class="loader"></div></div>
+            <section v-else>
+              <ol class="mt-5">
+                <li
+                  v-for="(result, index) in results"
+                  :key="index"
+                  class="rounded-md shadow-md p-5"
+                >
+                  <div v-if="index === 'Claude'">
+                    <p>
+                      <strong>Claude Evaluation: </strong
+                      ><span
+                        :class="{
+                          'bg-emerald-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Good candidate',
+                          'bg-red-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Bad candidate',
+                        }"
+                        >{{ result.evaluation }}</span
+                      >
+                    </p>
+                    <p><strong>Claude Reason: </strong>{{ result.reason }}</p>
+                  </div>
+                  <div v-else>
+                    <p>
+                      <strong>GPT Evaluation: </strong
+                      ><span
+                        :class="{
+                          'bg-emerald-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Good candidate',
+                          'bg-red-500 text-white p-1 text-xs text-center inline-block px-2 shadow-md capitalize font-semibold rounded-full mt-5':
+                            result.evaluation === 'Bad candidate',
+                        }"
+                        >{{ result.evaluation }}</span
+                      >
+                    </p>
+                    <p><strong>GPT Reason: </strong>{{ result.reason }}</p>
+                  </div>
+                </li>
+              </ol>
+            </section>
           </div>
           <div v-else>
             <p class="text-gray-500">No results to display.</p>
@@ -191,23 +231,24 @@ const removeFile = () => {
 // Handle form submission
 const submitForm = () => {
   submitted.value = false;
+  results.value = "";
   if (file.value || description.value) {
     if (file.value) {
       const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
-      // post the contents of file to url
+      const formData = new FormData();
+      formData.append("file", fileInput.value.files[0]); // Assuming `fileInput` is your file input element
+      // formData.append('description', description.value);
       fetch(url, {
         method: "POST",
-        body: file.value,
+        body: formData,
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          results.value = data;
         });
-      results.value = `File "${file.value.name}" uploaded"`;
       submitted.value = true;
     }
     if (description.value) {
-      // post the contents of description to url
       const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
       fetch(url, {
         method: "POST",
@@ -215,9 +256,9 @@ const submitForm = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
+          results.value = data;
         });
-      results.value = `Description: "${description.value}"`;
       submitted.value = true;
     }
     file.value = null;
@@ -238,6 +279,22 @@ const handleDragLeave = () => {
 };
 </script>
 
-<style scoped>
-/* You can add custom styles if needed */
+<style>
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 60px;
+  aspect-ratio: 4;
+  --_g: no-repeat radial-gradient(circle closest-side,#000 90%,#0000);
+  background: 
+    var(--_g) 0%   50%,
+    var(--_g) 50%  50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 100%;
+  animation: l7 1s infinite linear;
+}
+@keyframes l7 {
+    33%{background-size:calc(100%/3) 0%  ,calc(100%/3) 100%,calc(100%/3) 100%}
+    50%{background-size:calc(100%/3) 100%,calc(100%/3) 0%  ,calc(100%/3) 100%}
+    66%{background-size:calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0%  }
+}
 </style>
