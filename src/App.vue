@@ -89,7 +89,7 @@
             >
           </h2>
           <div v-if="submitted">
-            <p
+            <!-- <p
               class="bg-green-500 text-white p-1 text-xs text-center inline-block px-5 shadow-md capitalize font-semibold rounded-full mt-5"
             >
               {{ dummyResponse.evaluation }}
@@ -113,7 +113,8 @@
                   <strong>Claude Reason: </strong>{{ reason.claude.reason }}
                 </p>
               </li>
-            </ol>
+            </ol> -->
+            <p>Loading results...</p>
           </div>
           <div v-else>
             <p class="text-gray-500">No results to display.</p>
