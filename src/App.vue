@@ -105,7 +105,9 @@
                 alt="PDF Icon"
                 class="h-12 mb-2"
               />
-              <!-- <p class="text-gray-500 text-center" v-if="patientFile">{{ patientFile.name }}</p> -->
+              <p class="text-gray-500 text-center" v-if="patientFile">
+                {{ patientFile.name }}
+              </p>
               <button
                 @click.stop="removePatientFile"
                 class="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none text-xs"
@@ -152,18 +154,18 @@
           </div>
 
           <button
-            @click="submitForm"
-            :disabled="!trialFile || (!patientFile && !description)"
-            class="mt-4 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
+            @click="goBack"
+            class="mt-4 ml-2 px-3 rounded-xl mx-2 bg-emerald-800 text-white py-2 hover:bg-gray-600 focus:outline-none"
           >
-            Submit
+            ← Start over
           </button>
 
           <button
-            @click="goBack"
-            class="mt-4 ml-2 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-gray-600 focus:outline-none"
+            @click="submitForm"
+            :disabled="!trialFile || (!patientFile && !description)"
+            class="mt-4 mx-2 px-3 bg-[#044477] text-white py-2 rounded-xl hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
-          ← Go Back
+            Submit
           </button>
         </div>
         <div class="px-3">
@@ -172,7 +174,11 @@
               Results
               <span
                 class="ml-5 border border-[#044477] text-[#044477] p-1 rounded-full px-4 hover:text-white hover:bg-[#093456] text-xs cursor-pointer"
-                @click="submitted = false"
+                @click="
+                  submitted = false;
+                  removePatientFile();
+                  results = null;
+                "
                 v-if="submitted"
                 ><icon>✖︎</icon> Clear</span
               >
@@ -226,9 +232,6 @@
                 </li>
               </ol>
             </section>
-            <!-- <div v-else>
-              <p class="text-gray-500">No results to display.</p>
-            </div> -->
           </div>
         </div>
       </div>
@@ -247,20 +250,8 @@ const isDragActive = ref(false);
 const trialFileUploaded = ref(false);
 const submitted = ref(false);
 const results = ref(null);
-
-// Trial file logic
 const trialFileInput = ref(null);
-
-// write watcher for trialFile
-// watch(trialFile, () => {
-//   if (trialFile.value) {
-//     trialFileUploaded.value = true;
-//     currentScreen = 2;
-//   } else {
-//     trialFileUploaded.value = false;
-//     currentScreen = 1;
-//   }
-// });
+const patientFileInput = ref(null);
 
 const triggerTrialFileSelect = () => trialFileInput.value.click();
 
@@ -296,13 +287,15 @@ const goToNextScreen = () => {
 const goBack = () => {
   trialFileUploaded.value = false;
   trialFile.value.value = null;
+  trialFile.value = null;
   patientFileFileUploaded.value = false;
   patientFile.value.value = null;
+  patientFile.value = null;
   currentScreen.value = 1;
 };
 
 // Patient file logic
-const patientFileInput = ref(null);
+
 const triggerPatientFileSelect = () => patientFileInput.value.click();
 
 const handlePatientFileSelect = (e) => {
@@ -351,6 +344,7 @@ const submitForm = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        submitted.value = false;
         console.log(data);
         results.value = data;
         submitted.value = true;
@@ -380,17 +374,20 @@ const handleDragLeave = () => {
 .loader {
   width: 60px;
   aspect-ratio: 4;
-  --_g: no-repeat radial-gradient(circle closest-side,#000 90%,#0000);
-  background: 
-    var(--_g) 0%   50%,
-    var(--_g) 50%  50%,
-    var(--_g) 100% 50%;
-  background-size: calc(100%/3) 100%;
+  --_g: no-repeat radial-gradient(circle closest-side, #000 90%, #0000);
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 100%;
   animation: l7 1s infinite linear;
 }
 @keyframes l7 {
-    33%{background-size:calc(100%/3) 0%  ,calc(100%/3) 100%,calc(100%/3) 100%}
-    50%{background-size:calc(100%/3) 100%,calc(100%/3) 0%  ,calc(100%/3) 100%}
-    66%{background-size:calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0%  }
+  33% {
+    background-size: calc(100% / 3) 0%, calc(100% / 3) 100%, calc(100% / 3) 100%;
+  }
+  50% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 0%, calc(100% / 3) 100%;
+  }
+  66% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 100%, calc(100% / 3) 0%;
+  }
 }
 </style>
