@@ -89,31 +89,6 @@
             >
           </h2>
           <div v-if="submitted">
-            <!-- <p
-              class="bg-green-500 text-white p-1 text-xs text-center inline-block px-5 shadow-md capitalize font-semibold rounded-full mt-5"
-            >
-              {{ dummyResponse.evaluation }}
-            </p>
-            <ol class="mt-5">
-              <li
-                v-for="(reason, index) in dummyResponse.reasons"
-                :key="index"
-                class="rounded-md shadow-md p-5"
-              >
-                <p>
-                  <strong>GPT Evaluation: </strong>{{ reason.GPT.evaluation }}
-                </p>
-                <p><strong>GPT Reason: </strong>{{ reason.GPT.reason }}</p>
-                <hr class="my-2" />
-                <p>
-                  <strong>Claude Evaluation: </strong
-                  >{{ reason.claude.evaluation }}
-                </p>
-                <p>
-                  <strong>Claude Reason: </strong>{{ reason.claude.reason }}
-                </p>
-              </li>
-            </ol> -->
             <div v-if="results === '' ">Loading results...<div class="loader"></div></div>
             <section v-else>
               <ol class="mt-5">
@@ -168,34 +143,16 @@
 <script setup>
 import { ref } from "vue";
 
-// State for file and description
 const file = ref(null);
 const description = ref("");
 const results = ref("");
 const isDragActive = ref(false);
 const submitted = ref(false);
-const dummyResponse = ref({
-  evaluation: "good candidate",
-  reasons: [
-    {
-      GPT: {
-        evaluation: "Good candidate",
-        reason:
-          "João Silva is a good candidate for the medical trials as he has extensive experience in clinical research and a strong adherence to ethical guidelines.",
-      },
-      claude: {
-        evaluation: "Good candidate",
-        reason:
-          "João has extensive education and experience in clinical research and a strong adherence to ethical guidelines.",
-      },
-    },
-  ],
-});
 
 // Trigger file select dialog
 const fileInput = ref(null);
 const triggerFileSelect = () => {
-  fileInput.value.click(); // Directly use the ref instead of querySelector
+  fileInput.value.click(); 
 };
 
 // Handle file drop
@@ -221,7 +178,6 @@ const handleFileSelect = (e) => {
   }
 };
 
-// Remove uploaded file
 const removeFile = () => {
   file.value = null;
   console.log("File removed");
@@ -236,8 +192,7 @@ const submitForm = () => {
     if (file.value) {
       const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
       const formData = new FormData();
-      formData.append("file", fileInput.value.files[0]); // Assuming `fileInput` is your file input element
-      // formData.append('description', description.value);
+      formData.append("file", fileInput.value.files[0]);
       fetch(url, {
         method: "POST",
         body: formData,
@@ -256,7 +211,6 @@ const submitForm = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          // console.log(data);
           results.value = data;
         });
       submitted.value = true;
