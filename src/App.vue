@@ -61,7 +61,6 @@
               v-model="description"
               type="text"
               rows="10"
-              placeholder="Type or paste description..."
               class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#044477]"
             />
           </div>
