@@ -8,7 +8,7 @@
   </div>
 
   <div class="text-center text-white text-4xl font-bold">
-    Medgical Medical Trials Classifier
+    Medical Trials Classifier
   </div>
 
   <div class="container mx-auto p-6">
@@ -27,7 +27,7 @@
             :class="[
               'border-[3px] border-dashed rounded-lg h-48 flex flex-col justify-center items-center cursor-pointer',
               isDragActive ? 'border-[#093456]' : 'border-gray-300',
-              'hover:bg-gray-50',
+              'hover:bg-white',
             ]"
           >
             <template v-if="trialFile">
@@ -75,7 +75,7 @@
           <button
             @click="goToNextScreen"
             :disabled="!trialFile"
-            class="mt-4 w-1/3 bg-[#044477] text-white py-2 rounded-lg hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
+            class="mt-4 w-1/3 bg-[#044477] text-white py-2 rounded-xl hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
             Continue →
           </button>
@@ -155,7 +155,7 @@
 
           <button
             @click="goBack"
-            class="mt-4 ml-2 px-3 rounded-xl mx-2 bg-emerald-800 text-white py-2 hover:bg-gray-600 focus:outline-none"
+            class="mt-4 ml-2 px-3 rounded-xl mx-2 bg-[#044477] text-white py-2 hover:bg-gray-600 focus:outline-none"
           >
             ← Start over
           </button>
@@ -163,9 +163,9 @@
           <button
             @click="submitForm"
             :disabled="!trialFile || (!patientFile && !description)"
-            class="mt-4 mx-2 px-3 bg-[#044477] text-white py-2 rounded-xl hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
+            class="mt-4 mx-2 px-3 bg-emerald-600 text-white py-2 rounded-xl hover:bg-[#093456] focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
-            Submit
+          Submit ✔︎ 
           </button>
         </div>
         <div class="px-3">
@@ -178,13 +178,14 @@
                   submitted = false;
                   removePatientFile();
                   results = null;
+                  patientFileInput = null;
                 "
-                v-if="submitted"
+                v-if="submitted && results !== null"
                 ><icon>✖︎</icon> Clear</span
               >
             </h2>
             <div v-if="results === null">
-              <p class="text-gray-500" v-if="results === null && !submitted">
+              <p class="text-gray-500" v-if="!submitted">
                 No results to display.
               </p>
               <section v-else>
@@ -291,10 +292,9 @@ const goBack = () => {
   patientFileFileUploaded.value = false;
   patientFile.value.value = null;
   patientFile.value = null;
+  results.value = null;
   currentScreen.value = 1;
 };
-
-// Patient file logic
 
 const triggerPatientFileSelect = () => patientFileInput.value.click();
 
@@ -325,14 +325,8 @@ const removePatientFile = () => {
 // Submit form
 const submitForm = () => {
   submitted.value = true;
+  results.value = null;
   if (trialFile.value || patientFile.value || description.value) {
-    // Handle form submission logic here
-    console.log("Trial File:", trialFile.value);
-    console.log("Patient File:", patientFile.value);
-    console.log("Description:", description.value);
-
-    // submitted.value = false;
-    // results.value = "";
     const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
     const formData = new FormData();
     formData.append("trialsPDF", trialFile.value);
@@ -349,17 +343,11 @@ const submitForm = () => {
         results.value = data;
         submitted.value = true;
       });
-    // submitted.value = true;
-    // alert("Form submitted successfully.");
-    // trialFile.value = null;
-    // patientFile.value = null;
-    // description.value = "";
   } else {
-    alert("Please upload files or fill out the description.");
+    alert("Please upload a PDF.");
   }
 };
 
-// Handle drag state
 const handleDragOver = () => {
   isDragActive.value = true;
 };
