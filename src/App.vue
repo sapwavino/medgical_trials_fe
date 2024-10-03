@@ -40,7 +40,7 @@
               </button>
             </template>
             <template v-else>
-              <p class="text-gray-500">Click or Drag and Drop to Upload PDF</p>
+              <p class="text-gray-500">Please, Upload the patient file</p>
             </template>
             <input
               ref="fileInput"
@@ -54,7 +54,7 @@
           <!-- Text Input Field -->
           <div class="mt-4">
             <label for="description" class="block text-gray-700 mb-2"
-              >Description</label
+              >Criteria Importance:</label
             >
             <textarea
               id="description"
@@ -79,18 +79,40 @@
 
       <!-- Second Section: Jumbotron for Results -->
       <div class="w-full md:w-1/2 px-3">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h2 class="text-2xl font-bold mb-4">Results <span class="ml-5 border border-[#044477] text-[#044477] p-1 rounded-full px-4 hover:text-white hover:bg-[#093456] text-xs cursor-pointer" @click="submitted = false" v-if="submitted">Clear</span></h2>
+        <div class="bg-white p-6 rounded-2xl shadow-lg">
+          <h2 class="text-2xl font-bold mb-4 flex items-center">
+            Results
+            <span
+              class="ml-5 border border-[#044477] text-[#044477] p-1 rounded-full px-4 hover:text-white hover:bg-[#093456] text-xs cursor-pointer"
+              @click="submitted = false"
+              v-if="submitted"
+              ><icon>✖︎</icon> Clear</span
+            >
+          </h2>
           <div v-if="submitted">
-
-            <p class="bg-green-500 text-white p-1 text-xs text-center w-[20%] capitalize font-semibold rounded-full mt-5" >{{ dummyResponse.evaluation }}</p>
+            <p
+              class="bg-green-500 text-white p-1 text-xs text-center inline-block px-5 shadow-md capitalize font-semibold rounded-full mt-5"
+            >
+              {{ dummyResponse.evaluation }}
+            </p>
             <ol class="mt-5">
-              <li v-for="(item, index) in dummyResponse.reasons" :key="index" class="rounded-md shadow-md p-5">
-                <p><strong>GPT Evaluation: </strong>{{ item.GPT.evaluation }}</p>
-                <p><strong>GPT Reason: </strong>{{ item.GPT.reason }}</p>
-                <hr class="my-2"/>
-                <p><strong>Claude Evaluation: </strong>{{ item.claude.evaluation }}</p>
-                <p><strong>Claude Reason: </strong>{{ item.claude.reason }}</p>
+              <li
+                v-for="(reason, index) in dummyResponse.reasons"
+                :key="index"
+                class="rounded-md shadow-md p-5"
+              >
+                <p>
+                  <strong>GPT Evaluation: </strong>{{ reason.GPT.evaluation }}
+                </p>
+                <p><strong>GPT Reason: </strong>{{ reason.GPT.reason }}</p>
+                <hr class="my-2" />
+                <p>
+                  <strong>Claude Evaluation: </strong
+                  >{{ reason.claude.evaluation }}
+                </p>
+                <p>
+                  <strong>Claude Reason: </strong>{{ reason.claude.reason }}
+                </p>
               </li>
             </ol>
           </div>
@@ -110,23 +132,25 @@ import { ref } from "vue";
 const file = ref(null);
 const description = ref("");
 const results = ref("");
-const isDragActive = ref(false); 
-const submitted = ref(false); 
+const isDragActive = ref(false);
+const submitted = ref(false);
 const dummyResponse = ref({
-  "evaluation": "good candidate",
-  "reasons":[
+  evaluation: "good candidate",
+  reasons: [
     {
-      "GPT": {
-        "evaluation": "Good candidate",
-        "reason": "João Silva is a good candidate for the medical trials as he has extensive experience in clinical research and a strong adherence to ethical guidelines.",
+      GPT: {
+        evaluation: "Good candidate",
+        reason:
+          "João Silva is a good candidate for the medical trials as he has extensive experience in clinical research and a strong adherence to ethical guidelines.",
       },
-      "claude": {
-        "evaluation": "Good candidate",
-        "reason": "João has extensive education and experience in clinical research and a strong adherence to ethical guidelines."
-      }
-    }
-  ]
-})
+      claude: {
+        evaluation: "Good candidate",
+        reason:
+          "João has extensive education and experience in clinical research and a strong adherence to ethical guidelines.",
+      },
+    },
+  ],
+});
 
 // Trigger file select dialog
 const fileInput = ref(null);
@@ -169,12 +193,32 @@ const submitForm = () => {
   submitted.value = false;
   if (file.value || description.value) {
     if (file.value) {
+      const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
+      // post the contents of file to url
+      fetch(url, {
+        method: "POST",
+        body: file.value,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        });
       results.value = `File "${file.value.name}" uploaded"`;
-      submitted.value = true
+      submitted.value = true;
     }
     if (description.value) {
+      // post the contents of description to url
+      const url = "https://medeval-ed1201aeb3b4.herokuapp.com/evaluate";
+      fetch(url, {
+        method: "POST",
+        body: description.value,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        });
       results.value = `Description: "${description.value}"`;
-      submitted.value = true
+      submitted.value = true;
     }
     file.value = null;
     description.value = "";
