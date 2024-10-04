@@ -331,7 +331,7 @@ const submitForm = () => {
     const formData = new FormData();
     formData.append("trialsPDF", trialFile.value);
     formData.append("patientPDF", patientFile.value);
-    formData.append("text", description.value);
+    formData.append("importance", description.value);
     fetch(url, {
       method: "POST",
       body: formData,
