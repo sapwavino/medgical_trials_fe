@@ -192,8 +192,11 @@
                 <div class="loader"></div>
               </section>
             </div>
-            <section v-else>
-              <ol class="mt-5">
+            <section v-else class="max-h-[60vh] overflow-y-scroll">
+              <pre class="text-sm">
+                {{ results }}
+              </pre>
+              <!-- <ol class="mt-5">
                 <li
                   v-for="(result, index) in results"
                   :key="index"
@@ -230,7 +233,7 @@
                     <p class="mt-3"><strong>GPT Reason: </strong>{{ result.reason }}</p>
                   </div>
                 </li>
-              </ol>
+              </ol> -->
             </section>
           </div>
         </div>
