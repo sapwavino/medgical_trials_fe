@@ -193,8 +193,8 @@
               </section>
             </div>
             <section v-else class="max-h-[60vh] overflow-y-scroll">
-              <pre class="text-sm">
-                {{ results }}
+              <pre class="text-sm text-wrap">
+                {{ results['GPT'] }}
               </pre>
               <!-- <ol class="mt-5">
                 <li
